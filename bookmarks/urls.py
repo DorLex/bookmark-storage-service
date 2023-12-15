@@ -1,5 +1,7 @@
 from django.urls import path
 
-urlpatterns = [
+from .views import BookmarkAPIView
 
+urlpatterns = [
+    path('', BookmarkAPIView.as_view()),
 ]
