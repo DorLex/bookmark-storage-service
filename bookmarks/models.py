@@ -2,7 +2,7 @@ from django.contrib.auth import get_user_model
 from django.db import models
 
 from bookmark_collections.models import Collections
-from .choices import UrlTypeChoices
+from enums.choices import UrlTypeChoices
 
 User = get_user_model()
 
@@ -16,7 +16,7 @@ class Bookmark(models.Model):
     description = models.TextField()
     url = models.URLField()
     url_type = models.CharField(max_length=32, choices=UrlTypeChoices.choices, default=UrlTypeChoices.website)
-    image = models.ImageField(upload_to='images/bookmarks/%Y/%m/%d', blank=True)
+    image = models.URLField(null=True)
     time_created = models.DateTimeField(auto_now_add=True)
     time_updated = models.DateTimeField(auto_now=True)
 

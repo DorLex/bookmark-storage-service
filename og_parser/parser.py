@@ -1,5 +1,7 @@
 from bs4 import BeautifulSoup
 
+from enums.choices import UrlTypeChoices
+
 
 class Parser:
     def __init__(self, page_html):
@@ -12,7 +14,7 @@ class Parser:
         return parsed_html
 
     def get_og_tag(self, tag):
-        og_tag = self.parsed_html.head.find(property=f'og:{tag}')
+        og_tag = self.parsed_html.find(property=f'og:{tag}')
         return og_tag
 
     def get_og_content(self, tag):
@@ -22,12 +24,12 @@ class Parser:
             return og_content
 
     def get_base_title(self):
-        base_title_tag = self.parsed_html.head.title
+        base_title_tag = self.parsed_html.title
         if base_title_tag:
             return base_title_tag.string
 
     def get_meta_description(self):
-        meta_description_tag = self.parsed_html.head.find('meta', {'name': 'description'})
+        meta_description_tag = self.parsed_html.find('meta', {'name': 'description'})
         if meta_description_tag:
             return meta_description_tag.get('content')
 
@@ -54,3 +56,17 @@ class Parser:
             return meta_description
 
         return self.unknown
+
+    @property
+    def type(self):
+        og_type = self.get_og_content('type')
+        if og_type not in UrlTypeChoices.values:
+            return UrlTypeChoices.website
+
+        return og_type
+
+    @property
+    def image(self):
+        og_image = self.get_og_content('image')
+        if og_image:
+            return og_image
