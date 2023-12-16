@@ -7,7 +7,8 @@ from .serializers import BookmarkSerializer
 
 class BookmarkAPIView(APIView):
     def post(self, request):
-        link = request.data.get('link')
+        # link = request.data.get('link')
+        link = 'https://lenta.ru/news/2023/08/11/pitt_jolie_divorce/'
 
         # делаем запрос по ссылке
         # парсим
