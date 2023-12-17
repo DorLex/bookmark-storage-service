@@ -7,3 +7,7 @@ class BookmarkSerializer(serializers.ModelSerializer):
     class Meta:
         model = Bookmark
         fields = '__all__'
+
+
+class DataSerializer(serializers.Serializer):
+    link = serializers.URLField()

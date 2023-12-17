@@ -1,18 +1,24 @@
 from rest_framework import status
+from rest_framework.exceptions import ParseError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from bookmarks.serializers import BookmarkSerializer
+from bookmarks.serializers import BookmarkSerializer, DataSerializer
 from og_parser.parser import Parser
 from og_parser.request_utils import get_page_html
 
 
-class BookmarkAPIView(APIView):
+class BookmarksAPIView(APIView):
     permission_classes = (IsAuthenticated,)
 
     def post(self, request):
-        link = request.data.get('link')
+        """Добавить закладку"""
+
+        serializer = DataSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        link = serializer.data.get('link')
 
         page_html = get_page_html(link)
         parser = Parser(page_html)
