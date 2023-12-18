@@ -26,6 +26,7 @@ urlpatterns = [
 
     path('api/v1/accounts/', include('accounts.urls')),
     path('api/v1/bookmarks/', include('bookmarks.urls')),
+    path('api/v1/collections/', include('bookmark_collections.urls')),
 ]
 
 if settings.DEBUG:
