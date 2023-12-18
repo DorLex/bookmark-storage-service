@@ -3,7 +3,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from bookmarks.serializers import BookmarkSerializer, LinkSerializer
+from bookmarks.serializers.data import LinkSerializer
+from bookmarks.serializers.model import BookmarkSerializer
 from og_parser.parser import Parser
 from og_parser.request_utils import get_page_html
 

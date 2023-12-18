@@ -6,7 +6,8 @@ from rest_framework.views import APIView
 
 from bookmark_collections.models import Collections
 from bookmarks.models import Bookmark
-from bookmarks.serializers import BookmarkSerializer, IDSerializer
+from bookmarks.serializers.data import IDSerializer
+from bookmarks.serializers.model import BookmarkSerializer
 
 
 class BookmarkAPIView(APIView):
