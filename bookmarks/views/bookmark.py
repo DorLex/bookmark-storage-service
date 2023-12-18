@@ -6,7 +6,7 @@ from rest_framework.views import APIView
 
 from bookmark_collections.models import Collections
 from bookmarks.models import Bookmark
-from bookmarks.serializers import BookmarkSerializer
+from bookmarks.serializers import BookmarkSerializer, IDSerializer
 
 
 class BookmarkAPIView(APIView):
@@ -24,6 +24,9 @@ class BookmarkAPIView(APIView):
         """Добавить закладку в коллекцию"""
 
         collection_id = request.data.get('collection_id')
+
+        serializer = IDSerializer(data={'id': collection_id})
+        serializer.is_valid(raise_exception=True)
 
         bookmark = get_object_or_404(Bookmark, user=request.user, pk=bookmark_id)
         collection = get_object_or_404(Collections, user=request.user, pk=collection_id)

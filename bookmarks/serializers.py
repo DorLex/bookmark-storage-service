@@ -9,5 +9,9 @@ class BookmarkSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class DataSerializer(serializers.Serializer):
+class LinkSerializer(serializers.Serializer):
     link = serializers.URLField()
+
+
+class IDSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
