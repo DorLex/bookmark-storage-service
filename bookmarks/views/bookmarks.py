@@ -3,7 +3,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from bookmarks.serializers.data import LinkSerializer
+from bookmarks.serializers.data import UrlSerializer
 from bookmarks.serializers.model import BookmarkSerializer
 from og_parser.parser import Parser
 from og_parser.request_utils import get_page_html
@@ -15,10 +15,10 @@ class BookmarksAPIView(APIView):
     def post(self, request):
         """Добавить закладку"""
 
-        serializer = LinkSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        link = request.data.get('link')
 
-        link = serializer.data.get('link')
+        serializer = UrlSerializer(data={'url': link})
+        serializer.is_valid(raise_exception=True)
 
         page_html = get_page_html(link)
         parser = Parser(page_html)

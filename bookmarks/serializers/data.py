@@ -1,8 +1,8 @@
 from rest_framework import serializers
 
 
-class LinkSerializer(serializers.Serializer):
-    link = serializers.URLField()
+class UrlSerializer(serializers.Serializer):
+    url = serializers.URLField()
 
 
 class IDSerializer(serializers.Serializer):
