@@ -12,7 +12,7 @@ class User(AbstractUser):
         validators=[AbstractUser.username_validator]
     )
 
-    email = models.EmailField(unique=True)
+    email = models.EmailField(null=False, blank=False, unique=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
