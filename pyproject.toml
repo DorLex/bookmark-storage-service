@@ -15,6 +15,7 @@ djangorestframework-simplejwt = "^5.3.1"
 requests = "^2.31.0"
 beautifulsoup4 = "^4.12.2"
 fake-headers = "^1.0.2"
+drf-yasg = "^1.21.7"
 
 
 [build-system]
