@@ -4,7 +4,7 @@ from django.db import models
 User = get_user_model()
 
 
-class Collections(models.Model):
+class Collection(models.Model):
     user = models.ForeignKey(User, models.CASCADE)
 
     title = models.CharField(max_length=255, unique=True, db_index=True)

@@ -1,5 +1,5 @@
 from django.contrib import admin
 
-from .models import Collections
+from .models import Collection
 
-admin.site.register(Collections)
+admin.site.register(Collection)

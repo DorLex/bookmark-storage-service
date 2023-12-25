@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 
-from bookmark_collections.models import Collections
+from bookmark_collections.models import Collection
 from enums.choices import UrlTypeChoices
 
 User = get_user_model()
@@ -10,7 +10,7 @@ User = get_user_model()
 class Bookmark(models.Model):
     user = models.ForeignKey(User, models.CASCADE)
 
-    collections = models.ManyToManyField(Collections, 'bookmarks', blank=True)
+    collections = models.ManyToManyField(Collection, 'bookmarks', blank=True)
 
     title = models.CharField(max_length=255, db_index=True)
     description = models.TextField()

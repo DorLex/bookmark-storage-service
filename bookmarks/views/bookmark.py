@@ -4,7 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from bookmark_collections.models import Collections
+from bookmark_collections.models import Collection
 from bookmarks.models import Bookmark
 from bookmarks.serializers.data import IDSerializer
 from bookmarks.serializers.model import BookmarkSerializer
@@ -30,7 +30,7 @@ class BookmarkAPIView(APIView):
         serializer.is_valid(raise_exception=True)
 
         bookmark = get_object_or_404(Bookmark, user=request.user, pk=bookmark_id)
-        collection = get_object_or_404(Collections, user=request.user, pk=collection_id)
+        collection = get_object_or_404(Collection, user=request.user, pk=collection_id)
 
         bookmark.collections.add(collection)
 
