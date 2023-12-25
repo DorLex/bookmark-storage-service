@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
 
+    'query_counter',
+
     'drf_yasg',
 
     'accounts',
@@ -57,6 +59,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'query_counter.middleware.DjangoQueryCounterMiddleware',
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -140,3 +144,7 @@ REST_FRAMEWORK = {
 
     'TEST_REQUEST_DEFAULT_FORMAT': 'json'
 }
+
+# django query counter
+DQC_PRINT_ALL_QUERIES = True
+DQC_PYGMENTS_STYLE = 'native'
