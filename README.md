@@ -25,7 +25,7 @@ docker compose up
 #### 5. Произвести миграции:
 
 ```bash
- docker compose run --rm app python manage.py migrate
+docker compose run --rm app python manage.py migrate
 ```
 
 #### 6. Создать суперпользователя:
