@@ -1,13 +1,15 @@
 from rest_framework import status
+from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
-from rest_framework.views import APIView
 
 from .serializers import UserSerializer
 
 
-class RegistrationAPIView(APIView):
+class RegistrationAPIView(GenericAPIView):
+    serializer_class = UserSerializer
+
     def post(self, request):
-        serializer = UserSerializer(data=request.data)
+        serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
