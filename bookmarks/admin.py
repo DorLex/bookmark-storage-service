@@ -1,8 +1,9 @@
 from django.contrib import admin
 
-from .models import Bookmark
+from bookmarks.models import Bookmark
 
 
 @admin.register(Bookmark)
 class BookmarkAdmin(admin.ModelAdmin):
     filter_horizontal = ('collections',)
+    readonly_fields = ('created_at', 'updated_at')
