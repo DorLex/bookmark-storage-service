@@ -17,23 +17,23 @@ Including another URLconf
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import include, path, URLPattern, URLResolver
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
-from yasg.urls import urlpatterns as doc_urls
-
-urlpatterns = [
+urlpatterns: list[URLResolver | URLPattern] = [
     path('admin/', admin.site.urls),
-
-    path('api/v1/', include(
-        [
-            path('accounts/', include('accounts.urls')),
-            path('bookmarks/', include('bookmarks.urls')),
-            path('collections/', include('bookmark_collections.urls')),
-        ]
-    ))
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
+    path(
+        'api/v1/', include(
+            [
+                path('accounts/', include('accounts.urls')),
+                path('bookmarks/', include('bookmarks.urls')),
+                path('collections/', include('bookmark_collections.urls')),
+            ],
+        ),
+    ),
 ]
-
-urlpatterns += doc_urls
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -11,20 +11,19 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
-
-from decouple import config
+from core.envs import env_config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR: Path = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config('DJANGO_SECRET_KEY')
+SECRET_KEY: str = env_config.django_secret_key
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DJANGO_DEBUG', default=False, cast=bool)
+DEBUG: bool = env_config.django_debug
 
 ALLOWED_HOSTS = []
 
@@ -37,15 +36,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+    # библиотеки:
     'rest_framework',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
-
+    'drf_spectacular',
     'query_counter',
-
-    'drf_yasg',
-
+    # модули:
     'accounts',
     'bookmarks',
     'bookmark_collections',
@@ -90,13 +87,13 @@ WSGI_APPLICATION = 'core.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('POSTGRES_DB'),
-        'USER': config('POSTGRES_USER'),
-        'PASSWORD': config('POSTGRES_PASSWORD'),
-        'HOST': 'pgdb',
-        'PORT': 5432,
+        'NAME': env_config.postgres_db,
+        'USER': env_config.postgres_user,
+        'PASSWORD': env_config.postgres_password,
+        'HOST': env_config.postgres_host,
+        'PORT': env_config.postgres_port,
         'TIME_ZONE': 'Europe/Moscow',
-    }
+    },
 }
 
 # Password validation
@@ -138,19 +135,29 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTH_USER_MODEL = 'accounts.User'
+AUTH_USER_MODEL: str = 'accounts.User'
 
-REST_FRAMEWORK = {
+REST_FRAMEWORK: dict = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.BasicAuthentication',
         'rest_framework.authentication.SessionAuthentication',
 
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json',
+}
 
-    'TEST_REQUEST_DEFAULT_FORMAT': 'json'
+SPECTACULAR_SETTINGS: dict = {
+    'TITLE': 'Bookmark Storage',
+    'DESCRIPTION': 'Хранилище ссылок',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    'COMPONENT_SPLIT_REQUEST': True,
+    'SCHEMA_PATH_PREFIX': r'/api/v[0-9]',  # для авто вычленения тега из url
 }
 
 # django query counter
-DQC_PRINT_ALL_QUERIES = True
-DQC_PYGMENTS_STYLE = 'native'
+# TODO: вынести в env? или пофиг, так как для dev
+DQC_PRINT_ALL_QUERIES: bool = True
+DQC_PYGMENTS_STYLE: str = 'native'

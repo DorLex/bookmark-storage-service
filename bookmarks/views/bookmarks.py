@@ -1,4 +1,3 @@
-from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -13,7 +12,7 @@ from og_parser.request_utils import get_page_html
 class BookmarksAPIView(APIView):
     permission_classes = (IsAuthenticated,)
 
-    @swagger_auto_schema(request_body=UrlSerializer, responses={status.HTTP_201_CREATED: BookmarkSerializer()})
+    # @swagger_auto_schema(request_body=UrlSerializer, responses={status.HTTP_201_CREATED: BookmarkSerializer()})
     def post(self, request):
         """Добавить закладку"""
 
@@ -31,7 +30,7 @@ class BookmarksAPIView(APIView):
             'description': parser.description,
             'url': url,
             'url_type': parser.type,
-            'image': parser.image
+            'image': parser.image,
         }
 
         serializer = BookmarkSerializer(data=data)
