@@ -7,8 +7,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ViewSet
 
 from bookmarks.models import Bookmark
-from bookmarks.serializers.data import UrlSerializer
-from bookmarks.serializers.model import BookmarkSerializer
+from bookmarks.serializers.bookmark import BookmarkInputSerializer, BookmarkSerializer
 from og_parser.parser import Parser
 from og_parser.request_utils import get_page_html
 
@@ -18,12 +17,12 @@ class BookmarkViewSet(ViewSet):
     permission_classes: tuple = (IsAuthenticated,)
 
     @extend_schema(
-        request=UrlSerializer,
+        request=BookmarkInputSerializer,
         responses=BookmarkSerializer,
     )
     def create(self, request: Request) -> Response[dict]:
         """Добавить ссылку."""
-        input_serializer: UrlSerializer = UrlSerializer(data=request.data)
+        input_serializer: BookmarkInputSerializer = BookmarkInputSerializer(data=request.data)
         input_serializer.is_valid(raise_exception=True)
 
         url: str = input_serializer.data.get('url')
