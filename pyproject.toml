@@ -64,14 +64,15 @@ ignore = [
     "FIX002", # наличие TODO комментариев
     "TD002", # отсутствие автора TODO комментария
     "TD003", # отсутствие ссылки на задачу в TODO комментарии
-    "RUF012" # доп. аннотация классовых атрибутов изменяемых типов
+    "RUF012", # доп. аннотация классовых атрибутов изменяемых типов
+    "DJ001" # django.CharField null=True
 ]
 
 [tool.ruff.lint.flake8-quotes]
 inline-quotes = "single" # формат ковычек
 
-#[tool.ruff.lint.flake8-annotations]
-#allow-star-arg-any = true  # разрешить Any для *args, **kwargs
+[tool.ruff.lint.flake8-annotations]
+allow-star-arg-any = true  # разрешить Any для *args, **kwargs
 
 [tool.ruff.format]
 quote-style = "single" # формат ковычек

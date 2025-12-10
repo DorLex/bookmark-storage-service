@@ -2,9 +2,10 @@ from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
 
-from .forms import CustomUserCreationForm, CustomUserChangeForm
+from accounts.forms import CustomUserChangeForm, CustomUserCreationForm
+from accounts.models import User as UserModel
 
-User = get_user_model()
+User: type[UserModel] = get_user_model()
 
 
 @admin.register(User)
@@ -20,22 +21,20 @@ class CustomUserAdmin(UserAdmin):
         (
             None,
             {
-                'fields': ('email', 'password')
-            }
+                'fields': ('email', 'password'),
+            },
         ),
-
         (
             'Personal info',
             {
-                'fields': ('username', 'first_name', 'last_name')
-            }
+                'fields': ('username', 'first_name', 'last_name'),
+            },
         ),
-
         (
             'Permissions',
             {
-                'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions',)
-            }
+                'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions'),
+            },
         ),
     )
 
@@ -44,7 +43,7 @@ class CustomUserAdmin(UserAdmin):
             None,
             {
                 'classes': ('wide',),
-                'fields': ('email', 'password1', 'password2',)
-            }
+                'fields': ('email', 'password1', 'password2'),
+            },
         ),
     )
