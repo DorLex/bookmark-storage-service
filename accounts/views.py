@@ -1,15 +1,20 @@
+from drf_spectacular.utils import extend_schema
 from rest_framework import status
-from rest_framework.generics import GenericAPIView
+from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework.viewsets import ViewSet
 
-from .serializers import UserSerializer
+from accounts.serializers import UserSerializer
 
 
-class RegistrationAPIView(GenericAPIView):
-    serializer_class = UserSerializer
-
-    def post(self, request):
-        serializer = self.serializer_class(data=request.data)
+class UserViewSet(ViewSet):
+    @extend_schema(
+        request=UserSerializer,
+        responses=UserSerializer,
+    )
+    def create(self, request: Request) -> Response[dict]:
+        """Регистрация пользователя."""
+        serializer: UserSerializer = UserSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
