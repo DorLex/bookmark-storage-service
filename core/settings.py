@@ -46,7 +46,6 @@ INSTALLED_APPS = [
     # модули:
     'accounts',
     'bookmarks',
-    'bookmark_collections',
 ]
 
 MIDDLEWARE = [

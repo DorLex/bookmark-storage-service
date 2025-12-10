@@ -12,6 +12,8 @@ from bookmarks.serializers.model import BookmarkSerializer
 from og_parser.parser import Parser
 from og_parser.request_utils import get_page_html
 
+# TODO: нужно еще добавить ручку прикрепления к коллекции ссылок
+
 
 class BookmarkViewSet(ViewSet):
     permission_classes: tuple = (IsAuthenticated,)
@@ -51,3 +53,12 @@ class BookmarkViewSet(ViewSet):
         bookmark: Bookmark = get_object_or_404(Bookmark, user=request.user, pk=bookmark_id)
         serializer: BookmarkSerializer = BookmarkSerializer(bookmark)
         return Response(serializer.data)
+
+    @extend_schema(responses={status.HTTP_200_OK: BookmarkSerializer})
+    def destroy(self, request: Request, bookmark_id: int) -> Response[dict]:
+        """Удалить ссылку."""
+        bookmark: Bookmark = get_object_or_404(Bookmark, user=request.user, pk=bookmark_id)
+        bookmark.delete()
+        serializer: BookmarkSerializer = BookmarkSerializer(bookmark)
+
+        return Response(serializer.data, status.HTTP_200_OK)
