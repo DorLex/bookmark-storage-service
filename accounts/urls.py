@@ -1,7 +1,7 @@
 from django.urls import URLPattern, URLResolver, include, path
 from rest_framework_simplejwt.views import TokenBlacklistView, TokenObtainPairView, TokenRefreshView, TokenVerifyView
 
-from accounts.views import UserViewSet
+from accounts.api.user import UserViewSet
 
 urlpatterns: list[URLPattern | URLResolver] = [
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),

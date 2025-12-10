@@ -12,9 +12,8 @@ from bookmarks.serializers.model import BookmarkSerializer
 from og_parser.parser import Parser
 from og_parser.request_utils import get_page_html
 
-# TODO: нужно еще добавить ручку прикрепления к коллекции ссылок
 
-
+@extend_schema(tags=['Bookmarks'])
 class BookmarkViewSet(ViewSet):
     permission_classes: tuple = (IsAuthenticated,)
 
@@ -52,6 +51,19 @@ class BookmarkViewSet(ViewSet):
         """Получить ссылку."""
         bookmark: Bookmark = get_object_or_404(Bookmark, user=request.user, pk=bookmark_id)
         serializer: BookmarkSerializer = BookmarkSerializer(bookmark)
+        return Response(serializer.data)
+
+    @extend_schema(
+        request=BookmarkSerializer,
+        responses=BookmarkSerializer,
+    )
+    def partial_update(self, request: Request, bookmark_id: int) -> Response[dict]:
+        """Обновить ссылку частично."""
+        bookmark: Bookmark = get_object_or_404(Bookmark, user=request.user, pk=bookmark_id)
+        serializer: BookmarkSerializer = BookmarkSerializer(bookmark, request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+
         return Response(serializer.data)
 
     @extend_schema(responses={status.HTTP_200_OK: BookmarkSerializer})

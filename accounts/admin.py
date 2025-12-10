@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
 
-from accounts.forms import CustomUserChangeForm, CustomUserCreationForm
+from accounts.forms.user import CustomUserChangeForm, CustomUserCreationForm
 from accounts.models import User as UserModel
 
 User: type[UserModel] = get_user_model()
