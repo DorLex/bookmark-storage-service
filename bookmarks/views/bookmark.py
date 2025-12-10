@@ -1,49 +1,53 @@
+from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.views import APIView
+from rest_framework.viewsets import ViewSet
 
-from bookmark_collections.models import Collection
 from bookmarks.models import Bookmark
-from bookmarks.serializers.data import IDSerializer
+from bookmarks.serializers.data import UrlSerializer
 from bookmarks.serializers.model import BookmarkSerializer
+from og_parser.parser import Parser
+from og_parser.request_utils import get_page_html
 
 
-class BookmarkAPIView(APIView):
-    permission_classes = (IsAuthenticated,)
+class BookmarkViewSet(ViewSet):
+    permission_classes: tuple = (IsAuthenticated,)
 
-    def get(self, request, bookmark_id):
-        """Получить закладку"""
+    @extend_schema(
+        request=UrlSerializer,
+        responses=BookmarkSerializer,
+    )
+    def create(self, request: Request) -> Response[dict]:
+        """Добавить ссылку."""
+        input_serializer: UrlSerializer = UrlSerializer(data=request.data)
+        input_serializer.is_valid(raise_exception=True)
 
-        bookmark = get_object_or_404(Bookmark, user=request.user, pk=bookmark_id)
-        serializer = BookmarkSerializer(bookmark)
+        url: str = input_serializer.data.get('url')
 
-        return Response(serializer.data)
+        page_html: str = get_page_html(url)
+        parser: Parser = Parser(page_html)
 
-    def post(self, request, bookmark_id):
-        """Добавить закладку в коллекцию"""
+        data: dict = {
+            'user': request.user.id,
+            'title': parser.title,
+            'description': parser.description,
+            'url': url,
+            'url_type': parser.type,
+            'image': parser.image,
+        }
 
-        collection_id = request.data.get('collection_id')
-
-        serializer = IDSerializer(data={'id': collection_id})
+        serializer: BookmarkSerializer = BookmarkSerializer(data=data)
         serializer.is_valid(raise_exception=True)
+        serializer.save()
 
-        bookmark = get_object_or_404(Bookmark, user=request.user, pk=bookmark_id)
-        collection = get_object_or_404(Collection, user=request.user, pk=collection_id)
+        return Response(serializer.data, status.HTTP_201_CREATED)
 
-        bookmark.collections.add(collection)
-
-        serializer = BookmarkSerializer(bookmark)
-
+    @extend_schema(responses=BookmarkSerializer)
+    def retrieve(self, request: Request, bookmark_id: int) -> Response[dict]:
+        """Получить ссылку."""
+        bookmark: Bookmark = get_object_or_404(Bookmark, user=request.user, pk=bookmark_id)
+        serializer: BookmarkSerializer = BookmarkSerializer(bookmark)
         return Response(serializer.data)
-
-    def delete(self, request, bookmark_id):
-        """Удалить закладку"""
-
-        bookmark = get_object_or_404(Bookmark, user=request.user, pk=bookmark_id)
-        bookmark.delete()
-
-        serializer = BookmarkSerializer(bookmark)
-
-        return Response(serializer.data, status.HTTP_204_NO_CONTENT)

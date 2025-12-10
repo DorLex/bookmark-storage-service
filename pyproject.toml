@@ -47,6 +47,7 @@ ignore = [
     "D100", # docstrings
     "D101",
     "D102",
+    "D103",
     "D104",
     "D105",
     "D106",
@@ -66,7 +67,9 @@ ignore = [
     "TD002", # отсутствие автора TODO комментария
     "TD003", # отсутствие ссылки на задачу в TODO комментарии
     "RUF012", # доп. аннотация классовых атрибутов изменяемых типов
-    "DJ001" # django.CharField null=True
+    "DJ001", # django.CharField null=True
+    "ERA001", # закомментированный код
+    "S113" # request без таймаута
 ]
 
 [tool.ruff.lint.flake8-quotes]

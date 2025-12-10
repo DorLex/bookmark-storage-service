@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup
 
-from core.enums.choices import UrlTypeChoices
+from core.enums.url import UrlTypeChoices
 
 
 class Parser:

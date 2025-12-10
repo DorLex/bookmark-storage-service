@@ -3,7 +3,7 @@ from django.db import models
 
 from accounts.models import User as UserModel
 from bookmark_collections.models import Collection
-from core.enums.choices import UrlTypeChoices
+from core.enums.url import UrlTypeChoices
 
 User: type[UserModel] = get_user_model()
 
