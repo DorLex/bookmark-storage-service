@@ -8,8 +8,7 @@ from rest_framework.viewsets import ViewSet
 
 from bookmarks.models import Bookmark
 from bookmarks.serializers.bookmark import BookmarkInputSerializer, BookmarkSerializer
-from og_parser.parser import Parser
-from og_parser.request_utils import get_page_html
+from og_parser.parser import OgParser
 
 
 @extend_schema(tags=['Bookmarks'])
@@ -25,18 +24,16 @@ class BookmarkViewSet(ViewSet):
         input_serializer: BookmarkInputSerializer = BookmarkInputSerializer(data=request.data)
         input_serializer.is_valid(raise_exception=True)
 
-        url: str = input_serializer.data.get('url')
-
-        page_html: str = get_page_html(url)
-        parser: Parser = Parser(page_html)
+        url: str = input_serializer.data['url']
+        og_parser: OgParser = OgParser(url)
 
         data: dict = {
             'user': request.user.id,
-            'title': parser.title,
-            'description': parser.description,
+            'title': og_parser.title,
+            'description': og_parser.description,
             'url': url,
-            'url_type': parser.type,
-            'image': parser.image,
+            'url_type': og_parser.type,
+            'image': og_parser.image,
         }
 
         serializer: BookmarkSerializer = BookmarkSerializer(data=data)
