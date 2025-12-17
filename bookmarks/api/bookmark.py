@@ -1,13 +1,11 @@
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
-from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.utils.serializer_helpers import ReturnDict
 from rest_framework.viewsets import ViewSet
 
-from bookmarks.models import Bookmark
 from bookmarks.serializers.bookmark import BookmarkInputSerializer, BookmarkSerializer
 from bookmarks.services.bookmark import BookmarkService
 
@@ -23,15 +21,15 @@ class BookmarkViewSet(ViewSet):
     def create(self, request: Request) -> Response[dict]:
         """Добавить ссылку."""
         bookmark_service: BookmarkService = BookmarkService()
-        bookmark: ReturnDict = bookmark_service.create_bookmark(request.user.id, request.data)
+        bookmark: ReturnDict = bookmark_service.create_bookmark(request.user, request.data)
         return Response(bookmark, status.HTTP_201_CREATED)
 
     @extend_schema(responses=BookmarkSerializer)
     def retrieve(self, request: Request, bookmark_id: int) -> Response[dict]:
         """Получить ссылку."""
-        bookmark: Bookmark = get_object_or_404(Bookmark, user=request.user, pk=bookmark_id)
-        serializer: BookmarkSerializer = BookmarkSerializer(bookmark)
-        return Response(serializer.data)
+        bookmark_service: BookmarkService = BookmarkService()
+        bookmark: ReturnDict = bookmark_service.get_bookmark(request.user, bookmark_id)
+        return Response(bookmark)
 
     @extend_schema(
         request=BookmarkSerializer,
@@ -39,18 +37,13 @@ class BookmarkViewSet(ViewSet):
     )
     def partial_update(self, request: Request, bookmark_id: int) -> Response[dict]:
         """Обновить ссылку частично."""
-        bookmark: Bookmark = get_object_or_404(Bookmark, user=request.user, pk=bookmark_id)
-        serializer: BookmarkSerializer = BookmarkSerializer(bookmark, request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-
-        return Response(serializer.data)
+        bookmark_service: BookmarkService = BookmarkService()
+        bookmark: ReturnDict = bookmark_service.update_bookmark(request.user, bookmark_id, request.data, partial=True)
+        return Response(bookmark)
 
     @extend_schema(responses={status.HTTP_200_OK: BookmarkSerializer})
     def destroy(self, request: Request, bookmark_id: int) -> Response[dict]:
         """Удалить ссылку."""
-        bookmark: Bookmark = get_object_or_404(Bookmark, user=request.user, pk=bookmark_id)
-        bookmark.delete()
-        serializer: BookmarkSerializer = BookmarkSerializer(bookmark)
-
-        return Response(serializer.data, status.HTTP_200_OK)
+        bookmark_service: BookmarkService = BookmarkService()
+        deleted_bookmark: ReturnDict = bookmark_service.delete_bookmark(request.user, bookmark_id)
+        return Response(deleted_bookmark, status.HTTP_200_OK)
