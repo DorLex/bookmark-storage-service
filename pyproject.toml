@@ -69,7 +69,8 @@ ignore = [
     "RUF012", # доп. аннотация классовых атрибутов изменяемых типов
     "DJ001", # django.CharField null=True
     "ERA001", # закомментированный код
-    "S113" # request без таймаута
+    "S113", # request без таймаута
+    "G004" # f-строка в логировании
 ]
 
 [tool.ruff.lint.flake8-quotes]

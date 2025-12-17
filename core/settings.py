@@ -83,7 +83,7 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 
-DATABASES = {
+DATABASES: dict = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': env_config.postgres_db,
@@ -155,7 +155,34 @@ SPECTACULAR_SETTINGS: dict = {
     'SCHEMA_PATH_PREFIX': r'/api/v[0-9]',  # для авто вычленения тега из url
 }
 
+LOGGING: dict = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'custom': {
+            'format': '[{asctime}] |{levelname}| ({name}.{funcName}:{lineno}): {message}',
+            'style': '{',  # использовать в 'format' вместо %
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'custom',
+        },
+    },
+    'root': {  # корневой logger
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+    'loggers': {  # настройка доп. loggers
+        'django': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': False,  # Сообщения не будут дублироваться в root-logger
+        },
+    },
+}
+
 # django query counter
-# TODO: вынести в env? или пофиг, так как для dev
 DQC_PRINT_ALL_QUERIES: bool = True
 DQC_PYGMENTS_STYLE: str = 'native'

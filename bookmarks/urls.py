@@ -9,6 +9,7 @@ urlpatterns: list[URLPattern] = [
         BookmarkViewSet.as_view(
             {
                 'get': 'retrieve',
+                'patch': 'partial_update',
                 'delete': 'destroy',
             },
         ),

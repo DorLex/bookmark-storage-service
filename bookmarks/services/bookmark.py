@@ -32,8 +32,7 @@ class BookmarkService:
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
-        # TODO: настроить Джанго логи
-        logger.info(f'Сохранена ссылка: {url=}, {user.pk=}')
+        logger.info(f'Сохранена ссылка: {user.pk=}, {url=}')
 
         return serializer.data
 
@@ -54,10 +53,16 @@ class BookmarkService:
         serializer: BookmarkSerializer = BookmarkSerializer(bookmark, bookmark_data, partial=partial)
         serializer.is_valid(raise_exception=True)
         serializer.save()
+
+        logger.info(f'Обновлена ссылка: {user.pk=}, {bookmark=}')
+
         return serializer.data
 
     def delete_bookmark(self, user: User, bookmark_id: int) -> ReturnDict:
         bookmark: Bookmark = get_object_or_404(Bookmark, user=user, pk=bookmark_id)
         bookmark.delete()
+
+        logger.info(f'Удалена ссылка: {user.pk=}, {bookmark=}')
+
         serializer: BookmarkSerializer = BookmarkSerializer(bookmark)
         return serializer.data
