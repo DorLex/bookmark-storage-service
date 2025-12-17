@@ -4,11 +4,12 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework.utils.serializer_helpers import ReturnDict
 from rest_framework.viewsets import ViewSet
 
 from bookmarks.models import Bookmark
 from bookmarks.serializers.bookmark import BookmarkInputSerializer, BookmarkSerializer
-from og_parser.parser import OgParser
+from bookmarks.services.bookmark import BookmarkService
 
 
 @extend_schema(tags=['Bookmarks'])
@@ -21,26 +22,9 @@ class BookmarkViewSet(ViewSet):
     )
     def create(self, request: Request) -> Response[dict]:
         """Добавить ссылку."""
-        input_serializer: BookmarkInputSerializer = BookmarkInputSerializer(data=request.data)
-        input_serializer.is_valid(raise_exception=True)
-
-        url: str = input_serializer.data['url']
-        og_parser: OgParser = OgParser(url)
-
-        data: dict = {
-            'user': request.user.id,
-            'title': og_parser.title,
-            'description': og_parser.description,
-            'url': url,
-            'url_type': og_parser.type,
-            'image': og_parser.image,
-        }
-
-        serializer: BookmarkSerializer = BookmarkSerializer(data=data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-
-        return Response(serializer.data, status.HTTP_201_CREATED)
+        bookmark_service: BookmarkService = BookmarkService()
+        bookmark: ReturnDict = bookmark_service.create_bookmark(request.user.id, request.data)
+        return Response(bookmark, status.HTTP_201_CREATED)
 
     @extend_schema(responses=BookmarkSerializer)
     def retrieve(self, request: Request, bookmark_id: int) -> Response[dict]:
