@@ -19,7 +19,7 @@ class BookmarkService:
         url: str = input_serializer.data['url']
         og_parser: OgParser = OgParser(url)
 
-        data: dict = {
+        insert_data: dict = {
             'user': user.pk,
             'title': og_parser.title,
             'description': og_parser.description,
@@ -28,7 +28,7 @@ class BookmarkService:
             'image': og_parser.image,
         }
 
-        serializer: BookmarkSerializer = BookmarkSerializer(data=data)
+        serializer: BookmarkSerializer = BookmarkSerializer(data=insert_data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
 
