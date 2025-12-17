@@ -33,15 +33,15 @@ class OgParser:
 
         return None
 
-    def _get_base_title(self) -> str:
-        base_title_tag = self.beautiful_soup_obj.title
+    def _get_base_title(self) -> str | None:
+        base_title_tag: Tag | None = self.beautiful_soup_obj.title
         if base_title_tag:
             return base_title_tag.string
 
         return None
 
-    def _get_meta_description(self) -> str:
-        meta_description_tag = self.beautiful_soup_obj.find('meta', {'name': 'description'})
+    def _get_meta_description(self) -> str | None:
+        meta_description_tag: Tag | None = self.beautiful_soup_obj.find('meta', {'name': 'description'})
         if meta_description_tag:
             return meta_description_tag.get('content')
 
@@ -53,7 +53,7 @@ class OgParser:
         if og_title:
             return og_title
 
-        base_title = self._get_base_title()
+        base_title: str | None = self._get_base_title()
         if base_title:
             return base_title
 
@@ -65,7 +65,7 @@ class OgParser:
         if og_description:
             return og_description
 
-        meta_description = self._get_meta_description()
+        meta_description: str | None = self._get_meta_description()
         if meta_description:
             return meta_description
 
@@ -77,7 +77,7 @@ class OgParser:
         if og_type not in UrlTypeChoices.values:
             return UrlTypeChoices.website
 
-        return og_type
+        return UrlTypeChoices[og_type]
 
     @property
     def image(self) -> str | None:
