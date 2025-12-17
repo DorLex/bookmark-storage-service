@@ -1,5 +1,6 @@
 import httpx
 from bs4 import BeautifulSoup
+from bs4.element import Tag
 from fake_headers import Headers
 from httpx import Response
 
@@ -10,37 +11,37 @@ class OgParser:
     def __init__(self, url: str) -> None:
         self.url: str = url
         self.header_generator: Headers = Headers(headers=True)
-        self.parsed_html: BeautifulSoup = self._get_parsed_html()
+        self.beautiful_soup_obj: BeautifulSoup = self._get_beautiful_soup_obj()
         self.unknown_value: str = 'Unknown'
-
-    def _get_parsed_html(self) -> BeautifulSoup:
-        markup: str = self._get_page_html(self.url)
-        return BeautifulSoup(markup, 'html.parser')
 
     def _get_page_html(self, url: str) -> str:
         headers: dict = self.header_generator.generate()
         response: Response = httpx.get(url, headers=headers)
         return response.text
 
-    def _get_og_tag(self, tag: str) -> BeautifulSoup | None:
-        return self.parsed_html.find(property=f'og:{tag}')
+    def _get_beautiful_soup_obj(self) -> BeautifulSoup:
+        markup: str = self._get_page_html(self.url)
+        return BeautifulSoup(markup, 'html.parser')
 
-    def _get_og_content(self, tag: str) -> str:
-        og_tag = self._get_og_tag(tag)
+    def _get_og_tag(self, tag: str) -> Tag | None:
+        return self.beautiful_soup_obj.find(property=f'og:{tag}')
+
+    def _get_content_from_og_tag(self, tag: str) -> str | None:
+        og_tag: Tag | None = self._get_og_tag(tag)
         if og_tag:
             return og_tag.get('content')
 
         return None
 
     def _get_base_title(self) -> str:
-        base_title_tag = self.parsed_html.title
+        base_title_tag = self.beautiful_soup_obj.title
         if base_title_tag:
             return base_title_tag.string
 
         return None
 
     def _get_meta_description(self) -> str:
-        meta_description_tag = self.parsed_html.find('meta', {'name': 'description'})
+        meta_description_tag = self.beautiful_soup_obj.find('meta', {'name': 'description'})
         if meta_description_tag:
             return meta_description_tag.get('content')
 
@@ -48,7 +49,7 @@ class OgParser:
 
     @property
     def title(self) -> str:
-        og_title = self._get_og_content('title')
+        og_title: str | None = self._get_content_from_og_tag('title')
         if og_title:
             return og_title
 
@@ -60,7 +61,7 @@ class OgParser:
 
     @property
     def description(self) -> str | None:
-        og_description = self._get_og_content('description')
+        og_description: str | None = self._get_content_from_og_tag('description')
         if og_description:
             return og_description
 
@@ -72,7 +73,7 @@ class OgParser:
 
     @property
     def type(self) -> UrlTypeChoices:
-        og_type = self._get_og_content('type')
+        og_type: str | None = self._get_content_from_og_tag('type')
         if og_type not in UrlTypeChoices.values:
             return UrlTypeChoices.website
 
@@ -80,7 +81,7 @@ class OgParser:
 
     @property
     def image(self) -> str | None:
-        og_image = self._get_og_content('image')
+        og_image: str | None = self._get_content_from_og_tag('image')
         if og_image:
             return og_image
 
