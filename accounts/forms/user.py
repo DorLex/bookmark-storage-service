@@ -8,11 +8,11 @@ User: type[UserModel] = get_user_model()
 
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
-        model = User
-        fields = ('email',)
+        model: type[User] = User
+        fields: tuple = ('email',)
 
 
 class CustomUserChangeForm(UserChangeForm):
     class Meta:
-        model = User
-        fields = ('email',)
+        model: type[User] = User
+        fields: tuple = ('email',)

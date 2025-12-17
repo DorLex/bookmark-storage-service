@@ -31,7 +31,25 @@ class TestBookmarks(APITestCase):
         self.client.force_authenticate(user=self.user)
 
     def test_get_bookmark(self) -> None:
-        url: str = reverse('bookmark', args=[self.bookmark.pk])
+        url: str = reverse('bookmark-detail', args=[self.bookmark.pk])
         response: Response = self.client.get(url)
+
+        assert response.status_code == status.HTTP_200_OK
+        assert response.data['title'] == self.bookmark.title
+        assert response.data['url'] == self.bookmark.url
+
+    def test_partial_update_bookmark(self) -> None:
+        url: str = reverse('bookmark-detail', args=[self.bookmark.pk])
+        new_title: str = 'updated_title'
+        body: dict = {'title': new_title}
+        response: Response = self.client.patch(url, data=body)
+
+        assert response.status_code == status.HTTP_200_OK
+        assert response.data['title'] == new_title
+        assert response.data['url'] == self.bookmark.url
+
+    def test_delete_bookmark(self) -> None:
+        url: str = reverse('bookmark-detail', args=[self.bookmark.pk])
+        response: Response = self.client.delete(url)
 
         assert response.status_code == status.HTTP_200_OK
