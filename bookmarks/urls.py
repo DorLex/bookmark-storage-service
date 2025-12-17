@@ -1,9 +1,18 @@
-from django.urls import path
+from django.urls import URLPattern, path
 
-from bookmarks.views.bookmark import BookmarkAPIView
-from bookmarks.views.bookmarks import BookmarksAPIView
+from bookmarks.api.bookmark import BookmarkViewSet
 
-urlpatterns = [
-    path('', BookmarksAPIView.as_view(), name='bookmarks'),
-    path('<int:bookmark_id>', BookmarkAPIView.as_view(), name='bookmark'),
+urlpatterns: list[URLPattern] = [
+    path('', BookmarkViewSet.as_view({'post': 'create'}), name='bookmark-list'),
+    path(
+        '<int:bookmark_id>',
+        BookmarkViewSet.as_view(
+            {
+                'get': 'retrieve',
+                'patch': 'partial_update',
+                'delete': 'destroy',
+            },
+        ),
+        name='bookmark-detail',
+    ),
 ]

@@ -1,7 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
-from .manegers import CustomUserManager
+from accounts.query_managers.user import CustomUserManager
 
 
 class User(AbstractUser):
@@ -9,7 +9,7 @@ class User(AbstractUser):
         max_length=255,
         null=True,
         blank=True,
-        validators=[AbstractUser.username_validator]
+        validators=[AbstractUser.username_validator],
     )
 
     email = models.EmailField(null=False, blank=False, unique=True)

@@ -1,45 +1,52 @@
-## Сервис для хранения закладок
+## Тестовое задание "Сервис для хранения ссылок".
 
-### Запуск проекта:
+### Описание:
 
-#### 1. Клонировать репозиторий:
+Сервис для хранения ссылок, парсинга их основной информации.  
+Для сохранения метаинформации о ссылке используется парсинг OG-тегов.  
+Подробнее в OG-тегах: <https://ogp.me/>
 
-```bash
-git clone git@github.com:DorLex/bookmark-storage-service.git
-```
+### Стек:
 
-#### 2. Перейдя в корневую папку проекта, создать файл `.env` (как в примере `.env.example`).
+- `Django REST Framework`
+- `BeautifulSoup`
+- `httpx`
+- `pydantic-settings`
+- `drf-spectacular`
+- `PostgreSQL`
+- `Docker`
 
-#### 3. Сбилдить через docker compose:
+### Установка зависимостей:
 
-```bash
-docker compose build
-```
+1. Создать окружение через `poetry`.
 
-#### 4. Запустить:
+2. Установить только основные зависимости, необходимые для запуска:
+   ```shell
+   poetry install --no-root --without dev
+   ```
 
-```bash
-docker compose up
-```
+3. Установить все зависимости, включая `dev`/`test` (+linter, +pre-commit и т.д.):
+    ```shell
+    poetry install --no-root
+    ```
 
-#### 5. Произвести миграции:
+### Pre-commit, Linter, Formatter:
 
-```bash
-docker compose run --rm app python manage.py migrate
-```
+- Установить `pre-commit` хуки:
+    ```shell
+    pre-commit install
+    ```
 
-#### 6. Создать суперпользователя:
+- Ручной запуск линтера и форматера:
+    ```shell
+    ruff check && ruff format
+    ```
 
-```bash
-docker compose run --rm app python manage.py createsuperuser
-```
+### Запуск:
 
-#### 7. Swagger документация:
+1. Создать файл `.env` по примеру `example.env`.
 
-http://127.0.0.1:8000/swagger/
-
-#### 8. Если хотим прогнать тесты:
-
-```bash
-docker compose run --rm app python manage.py test
-```
+2. Основные команды запуска смотрите в `Makefile`:
+    ```shell
+    make up
+    ```
